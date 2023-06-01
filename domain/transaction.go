@@ -1,37 +1,42 @@
 package transaction_organizer_domain
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type Transaction struct {
-	Id                int       `json:"id"`
-	Partner           string    `json:"partner"`
-	Amount            float64   `json:"amount"`
-	Date              time.Time `json:"date"`
-	TransactionTypeId int       `json:"transactionTypeId"`
+	Id                int
+	Partner           string
+	Amount            float64
+	Date              time.Time
+	TransactionTypeId int
 }
 
 type TransactionType struct {
-	Id        int                  `json:"id"`
-	Name      string               `json:"name"`
-	TypeGroup TransactionTypeGroup `json:"typeGroup"`
+	Id        int
+	Name      string
+	TypeGroup TransactionTypeGroup
 }
 
-// TransactionTypeGroup - Custom type to hold value for weekday ranging from 1-7
-type TransactionTypeGroup int
+// TransactionTypeGroup - Custom type to hold value for TransactionTypeGroup
+type TransactionTypeGroup string
 
-// Declare related constants for each weekday starting with index 1
 const (
-	Overhead TransactionTypeGroup = iota + 1
-	OccasionalExpense
-	ExtraExpense
+	Overhead          TransactionTypeGroup = "OVERHEAD"
+	OccasionalExpense TransactionTypeGroup = "OCCASIONAL_EXPENSE"
+	ExtraExpense      TransactionTypeGroup = "EXTRA_EXPENSE"
 )
 
-// String - Creating common behavior - give the type a String function
-func (w TransactionTypeGroup) String() string {
-	return [...]string{"Overhead", "OccasionalExpense", "ExtraExpense"}[w-1]
-}
+var (
+	capabilitiesMap = map[string]TransactionTypeGroup{
+		"overhead":           Overhead,
+		"occasional_expense": OccasionalExpense,
+		"extra_expense":      ExtraExpense,
+	}
+)
 
-// EnumIndex - Creating common behavior - give the type a EnumIndex function
-func (w TransactionTypeGroup) EnumIndex() int {
-	return int(w)
+func ParseTransactionTypeGroup(str string) (TransactionTypeGroup, bool) {
+	c, ok := capabilitiesMap[strings.ToLower(str)]
+	return c, ok
 }

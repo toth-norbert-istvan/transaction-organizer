@@ -6,6 +6,7 @@ import (
 	"gitlab.com/transaction-organizer/domain"
 	"mime/multipart"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -47,7 +48,7 @@ func GetTransactionsFromExcelFile(file *multipart.FileHeader) []transaction_orga
 
 func getCellStringValue(excelFile *excelize.File, cell string) string {
 	cellValue, _ := excelFile.GetCellValue(EXCEL_SHEET_NAME, cell)
-	return cellValue
+	return strings.TrimSpace(cellValue)
 }
 
 func getCellFloatValue(excelFile *excelize.File, cell string) float64 {
