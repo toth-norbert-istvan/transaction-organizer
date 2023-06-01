@@ -1,4 +1,4 @@
-package transaction_organizer_domain
+package domain
 
 import (
 	"strings"

@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/transaction-organizer/controller"
+	"github.com/transaction-organizer/controller"
 	"log"
 )
 

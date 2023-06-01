@@ -1,34 +1,34 @@
-package transaction_organizer_mapper
+package mapper
 
 import (
 	"database/sql"
-	transaction_organizer_controller_model "gitlab.com/transaction-organizer/controller/model"
-	transaction_organizer_domain "gitlab.com/transaction-organizer/domain"
-	transaction_organizer_domain_service "gitlab.com/transaction-organizer/service"
+	"github.com/transaction-organizer/domain"
+	"github.com/transaction-organizer/dto"
+	"github.com/transaction-organizer/repository"
 	"strings"
 )
 
-func DomainsToDtos(domains []transaction_organizer_domain.Transaction, db *sql.DB) []transaction_organizer_controller_model.Transaction {
-	var dtos []transaction_organizer_controller_model.Transaction
+func DomainsToDtos(domains []domain.Transaction, db *sql.DB) []dto.Transaction {
+	var dtos []dto.Transaction
 	for _, domain := range domains {
 		dtos = append(dtos, DomainToDto(domain, db))
 	}
 	return dtos
 }
 
-func DomainToDto(domain transaction_organizer_domain.Transaction, db *sql.DB) transaction_organizer_controller_model.Transaction {
-	transactionTypeDomain, err := transaction_organizer_domain_service.GetTransactionType(domain.TransactionTypeId, db)
+func DomainToDto(domain domain.Transaction, db *sql.DB) dto.Transaction {
+	transactionTypeDomain, err := repository.GetTransactionType(domain.TransactionTypeId, db)
 
-	var transactionTypeDto *transaction_organizer_controller_model.TransactionType
+	var transactionTypeDto *dto.TransactionType
 	if err == nil {
-		transactionTypeDto = &transaction_organizer_controller_model.TransactionType{
+		transactionTypeDto = &dto.TransactionType{
 			Id:    domain.TransactionTypeId,
 			Name:  transactionTypeDomain.Name,
 			Group: transactionTypeDomain.TypeGroup,
 		}
 	}
 
-	return transaction_organizer_controller_model.Transaction{
+	return dto.Transaction{
 		Id:              domain.Id,
 		Partner:         strings.TrimSpace(domain.Partner),
 		Amount:          domain.Amount,

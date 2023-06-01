@@ -1,4 +1,4 @@
-package transaction_organizer_db
+package db
 
 import (
 	"database/sql"

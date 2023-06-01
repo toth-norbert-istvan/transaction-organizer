@@ -1,4 +1,4 @@
-module gitlab.com/transaction-organizer
+module github.com/transaction-organizer
 
 go 1.20
 

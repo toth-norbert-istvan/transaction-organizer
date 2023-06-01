@@ -1,9 +1,9 @@
-package transaction_organizer_domain_service
+package service
 
 import (
 	"fmt"
+	"github.com/transaction-organizer/domain"
 	"github.com/xuri/excelize/v2"
-	"gitlab.com/transaction-organizer/domain"
 	"mime/multipart"
 	"strconv"
 	"strings"
@@ -17,7 +17,7 @@ const TRANSACTION_DATE_COLUMN = "A"
 
 var excelEpoch = time.Date(1899, time.December, 30, 0, 0, 0, 0, time.UTC)
 
-func GetTransactionsFromExcelFile(file *multipart.FileHeader) []transaction_organizer_domain.Transaction {
+func GetTransactionsFromExcelFile(file *multipart.FileHeader) []domain.Transaction {
 	f, err := file.Open()
 	if err != nil {
 		fmt.Println("Error during excel file access:", err)
@@ -27,11 +27,11 @@ func GetTransactionsFromExcelFile(file *multipart.FileHeader) []transaction_orga
 	excelFile, err := excelize.OpenReader(f)
 
 	cellIndex := 2
-	var newTransactions []transaction_organizer_domain.Transaction
+	var newTransactions []domain.Transaction
 	for {
 		partnerName := getCellStringValue(excelFile, fmt.Sprintf("%s%d", PARTNER_NAME_COLUMN, cellIndex))
 		if len(partnerName) > 0 {
-			newTransaction := transaction_organizer_domain.Transaction{
+			newTransaction := domain.Transaction{
 				Partner: partnerName,
 				Amount:  getCellFloatValue(excelFile, fmt.Sprintf("%s%d", AMOUNT_COLUMN, cellIndex)),
 				Date:    getCellTimeValue(excelFile, fmt.Sprintf("%s%d", TRANSACTION_DATE_COLUMN, cellIndex)),

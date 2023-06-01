@@ -1,7 +1,7 @@
-package transaction_organizer_controller_model
+package dto
 
 import (
-	transaction_organizer_domain "gitlab.com/transaction-organizer/domain"
+	"github.com/transaction-organizer/domain"
 	"time"
 )
 
@@ -23,7 +23,7 @@ type NewTransactionType struct {
 }
 
 type TransactionType struct {
-	Id    int                                               `json:"id"`
-	Name  string                                            `json:"name"`
-	Group transaction_organizer_domain.TransactionTypeGroup `json:"group"`
+	Id    int                         `json:"id"`
+	Name  string                      `json:"name"`
+	Group domain.TransactionTypeGroup `json:"group"`
 }
