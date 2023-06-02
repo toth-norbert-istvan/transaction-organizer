@@ -1,41 +1,39 @@
 package main
 
 import (
-	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/transaction-organizer/controller"
-	"log"
+	"github.com/transaction-organizer/db"
 )
 
 func main() {
-	db, err := sql.Open("postgres", "postgresql://postgres:password@localhost:5432/transaction-organizer?sslmode=disable")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Init DB connection
+	db.PostgreSqlDB{}.Connect()
 
+	// Init REST API endpoints
 	router := gin.Default()
-	initTransactionMethods(router, db)
-	initTransactionTypeMethods(router, db)
+	initTransactionMethods(router)
+	initTransactionTypeMethods(router)
 	router.Run("localhost:8080")
 }
 
-func initTransactionTypeMethods(router *gin.Engine, db *sql.DB) {
+func initTransactionTypeMethods(router *gin.Engine) {
 	router.GET("/transaction-types", func(c *gin.Context) {
-		controller.TransactionTypeController{}.GetTransactionTypes(c, db)
+		controller.TransactionTypeController{}.GetTransactionTypes(c)
 	})
 	router.POST("/transaction-types", func(c *gin.Context) {
-		controller.TransactionTypeController{}.PostTransactionType(c, db)
+		controller.TransactionTypeController{}.PostTransactionType(c)
 	})
 }
 
-func initTransactionMethods(router *gin.Engine, db *sql.DB) {
+func initTransactionMethods(router *gin.Engine) {
 	router.GET("/transactions", func(c *gin.Context) {
-		controller.TransactionController{}.GetTransactions(c, db)
+		controller.TransactionController{}.GetTransactions(c)
 	})
 	router.POST("/transactions/kh", func(c *gin.Context) {
-		controller.TransactionController{}.PostKhTransaction(c, db)
+		controller.TransactionController{}.PostKhTransaction(c)
 	})
 	router.PATCH("/transactions/:transactionId", func(c *gin.Context) {
-		controller.TransactionController{}.PatchTransaction(c, db)
+		controller.TransactionController{}.PatchTransaction(c)
 	})
 }

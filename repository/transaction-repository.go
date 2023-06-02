@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"database/sql"
 	"github.com/transaction-organizer/db"
 	"github.com/transaction-organizer/domain"
 	"log"
@@ -9,7 +8,9 @@ import (
 
 type TransactionRepository struct{}
 
-func (tr TransactionRepository) GetTransactions(db *sql.DB) []domain.Transaction {
+func (tr TransactionRepository) GetTransactions() []domain.Transaction {
+	var db = db.PostgreSqlDB{}.GetDb()
+
 	rows, err := db.Query("SELECT * FROM transactions")
 	defer rows.Close()
 
@@ -26,12 +27,9 @@ func (tr TransactionRepository) GetTransactions(db *sql.DB) []domain.Transaction
 	return transactions
 }
 
-func (tr TransactionRepository) GetTransactionsFromDB() []domain.Transaction {
-	db.Connect()
-	return nil
-}
+func (tr TransactionRepository) SaveTransactions(transactions []domain.Transaction) {
+	var db = db.PostgreSqlDB{}.GetDb()
 
-func (tr TransactionRepository) SaveTransactions(db *sql.DB, transactions []domain.Transaction) {
 	for _, transaction := range transactions {
 		_, err := db.Exec("INSERT INTO transactions (partner, amount, date) VALUES ($1, $2, $3)", transaction.Partner, transaction.Amount, transaction.Date)
 
