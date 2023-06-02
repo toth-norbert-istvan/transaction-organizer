@@ -6,9 +6,9 @@ The implemented application is a REST API that facilitates the organization of b
 
 Imported transactions can be assigned to user-specified transaction types. These transaction types belong to a predefined group, which allows for the creation of general reports about expenses.
 
-![transactions.png](documentation-assets/transactions.png)
-![transaction-type-summary.png](documentation-assets/transaction-type-summary.png)
-![group-summary.png](documentation-assets/group-summary.png)
+<img alt="transactions.png" height="300" src="documentation-assets/transactions.png"/>
+<img alt="transaction-type-summary.png" height="300" src="documentation-assets/transaction-type-summary.png"/>
+<img alt="group-summary.png" height="300" src="documentation-assets/group-summary.png"/>
 
 ## Project setup
 1. Database initialization
