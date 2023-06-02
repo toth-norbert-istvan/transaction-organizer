@@ -7,7 +7,9 @@ import (
 	"log"
 )
 
-func GetTransactions(db *sql.DB) []domain.Transaction {
+type TransactionRepository struct{}
+
+func (tr TransactionRepository) GetTransactions(db *sql.DB) []domain.Transaction {
 	rows, err := db.Query("SELECT * FROM transactions")
 	defer rows.Close()
 
@@ -24,12 +26,12 @@ func GetTransactions(db *sql.DB) []domain.Transaction {
 	return transactions
 }
 
-func GetTransactionsFromDB() []domain.Transaction {
+func (tr TransactionRepository) GetTransactionsFromDB() []domain.Transaction {
 	db.Connect()
 	return nil
 }
 
-func SaveTransactions(db *sql.DB, transactions []domain.Transaction) {
+func (tr TransactionRepository) SaveTransactions(db *sql.DB, transactions []domain.Transaction) {
 	for _, transaction := range transactions {
 		_, err := db.Exec("INSERT INTO transactions (partner, amount, date) VALUES ($1, $2, $3)", transaction.Partner, transaction.Amount, transaction.Date)
 

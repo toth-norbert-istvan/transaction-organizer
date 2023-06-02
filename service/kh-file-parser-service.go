@@ -17,7 +17,9 @@ const TRANSACTION_DATE_COLUMN = "A"
 
 var excelEpoch = time.Date(1899, time.December, 30, 0, 0, 0, 0, time.UTC)
 
-func GetTransactionsFromExcelFile(file *multipart.FileHeader) []domain.Transaction {
+type KhFileParserService struct{}
+
+func (kfps KhFileParserService) GetTransactionsFromExcelFile(file *multipart.FileHeader) []domain.Transaction {
 	f, err := file.Open()
 	if err != nil {
 		fmt.Println("Error during excel file access:", err)
@@ -29,12 +31,12 @@ func GetTransactionsFromExcelFile(file *multipart.FileHeader) []domain.Transacti
 	cellIndex := 2
 	var newTransactions []domain.Transaction
 	for {
-		partnerName := getCellStringValue(excelFile, fmt.Sprintf("%s%d", PARTNER_NAME_COLUMN, cellIndex))
+		partnerName := kfps.getCellStringValue(excelFile, fmt.Sprintf("%s%d", PARTNER_NAME_COLUMN, cellIndex))
 		if len(partnerName) > 0 {
 			newTransaction := domain.Transaction{
 				Partner: partnerName,
-				Amount:  getCellFloatValue(excelFile, fmt.Sprintf("%s%d", AMOUNT_COLUMN, cellIndex)),
-				Date:    getCellTimeValue(excelFile, fmt.Sprintf("%s%d", TRANSACTION_DATE_COLUMN, cellIndex)),
+				Amount:  kfps.getCellFloatValue(excelFile, fmt.Sprintf("%s%d", AMOUNT_COLUMN, cellIndex)),
+				Date:    kfps.getCellTimeValue(excelFile, fmt.Sprintf("%s%d", TRANSACTION_DATE_COLUMN, cellIndex)),
 			}
 			newTransactions = append(newTransactions, newTransaction)
 			cellIndex++
@@ -46,18 +48,18 @@ func GetTransactionsFromExcelFile(file *multipart.FileHeader) []domain.Transacti
 	return newTransactions
 }
 
-func getCellStringValue(excelFile *excelize.File, cell string) string {
+func (kfps KhFileParserService) getCellStringValue(excelFile *excelize.File, cell string) string {
 	cellValue, _ := excelFile.GetCellValue(EXCEL_SHEET_NAME, cell)
 	return strings.TrimSpace(cellValue)
 }
 
-func getCellFloatValue(excelFile *excelize.File, cell string) float64 {
+func (kfps KhFileParserService) getCellFloatValue(excelFile *excelize.File, cell string) float64 {
 	cellValue, _ := excelFile.GetCellValue(EXCEL_SHEET_NAME, cell)
 	floatValue, _ := strconv.ParseFloat(cellValue, 64)
 	return floatValue
 }
 
-func getCellTimeValue(excelFile *excelize.File, cell string) time.Time {
+func (kfps KhFileParserService) getCellTimeValue(excelFile *excelize.File, cell string) time.Time {
 	cellValue, _ := excelFile.GetCellValue(EXCEL_SHEET_NAME, cell, excelize.Options{RawCellValue: true})
 	var days, _ = strconv.Atoi(cellValue)
 	return excelEpoch.Add(time.Second * time.Duration(days*86400))

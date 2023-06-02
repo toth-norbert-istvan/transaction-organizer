@@ -9,18 +9,20 @@ import (
 	"net/http"
 )
 
-func GetTransactions(c *gin.Context, db *sql.DB) {
-	transactions := repository.GetTransactions(db)
-	c.IndentedJSON(http.StatusOK, mapper.DomainsToDtos(transactions, db))
+type TransactionController struct{}
+
+func (tc TransactionController) GetTransactions(c *gin.Context, db *sql.DB) {
+	transactions := repository.TransactionRepository{}.GetTransactions(db)
+	c.IndentedJSON(http.StatusOK, mapper.TransactionMapper{}.DomainsToDtos(transactions, db))
 }
 
-func PostKhTransaction(c *gin.Context, db *sql.DB) {
+func (tc TransactionController) PostKhTransaction(c *gin.Context, db *sql.DB) {
 	var file, _ = c.FormFile("file")
-	newTransactions := service.GetTransactionsFromExcelFile(file)
-	repository.SaveTransactions(db, newTransactions)
+	newTransactions := service.KhFileParserService{}.GetTransactionsFromExcelFile(file)
+	repository.TransactionRepository{}.SaveTransactions(db, newTransactions)
 	c.Status(http.StatusCreated)
 }
 
-func PatchTransaction(c *gin.Context, db *sql.DB) {
+func (tc TransactionController) PatchTransaction(c *gin.Context, db *sql.DB) {
 	c.Status(http.StatusOK)
 }

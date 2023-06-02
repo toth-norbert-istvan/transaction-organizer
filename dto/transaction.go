@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"github.com/transaction-organizer/domain"
 	"time"
 )
 
@@ -15,15 +14,4 @@ type Transaction struct {
 
 type TransactionPatch struct {
 	TransactionTypeId string `json:"id"`
-}
-
-type NewTransactionType struct {
-	Name  string `json:"name"`
-	Group string `json:"group"`
-}
-
-type TransactionType struct {
-	Id    int                         `json:"id"`
-	Name  string                      `json:"name"`
-	Group domain.TransactionTypeGroup `json:"group"`
 }

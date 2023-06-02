@@ -21,21 +21,21 @@ func main() {
 
 func initTransactionTypeMethods(router *gin.Engine, db *sql.DB) {
 	router.GET("/transaction-types", func(c *gin.Context) {
-		controller.GetTransactionTypes(c, db)
+		controller.TransactionTypeController{}.GetTransactionTypes(c, db)
 	})
 	router.POST("/transaction-types", func(c *gin.Context) {
-		controller.PostTransactionType(c, db)
+		controller.TransactionTypeController{}.PostTransactionType(c, db)
 	})
 }
 
 func initTransactionMethods(router *gin.Engine, db *sql.DB) {
 	router.GET("/transactions", func(c *gin.Context) {
-		controller.GetTransactions(c, db)
+		controller.TransactionController{}.GetTransactions(c, db)
 	})
 	router.POST("/transactions/kh", func(c *gin.Context) {
-		controller.PostKhTransaction(c, db)
+		controller.TransactionController{}.PostKhTransaction(c, db)
 	})
 	router.PATCH("/transactions/:transactionId", func(c *gin.Context) {
-		controller.PatchTransaction(c, db)
+		controller.TransactionController{}.PatchTransaction(c, db)
 	})
 }

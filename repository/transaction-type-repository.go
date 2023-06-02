@@ -6,7 +6,9 @@ import (
 	"log"
 )
 
-func GetTransactionType(transactionTypeId int, db *sql.DB) (domain.TransactionType, error) {
+type TransactionTypeRepository struct{}
+
+func (ttr TransactionTypeRepository) GetTransactionType(transactionTypeId int, db *sql.DB) (domain.TransactionType, error) {
 	var transactionType domain.TransactionType
 
 	err := db.QueryRow("SELECT * FROM transaction_type WHERE id=$1", transactionTypeId).Scan(&transactionType.Id, &transactionType.Name, &transactionType.TypeGroup)
@@ -16,7 +18,7 @@ func GetTransactionType(transactionTypeId int, db *sql.DB) (domain.TransactionTy
 	return transactionType, nil
 }
 
-func GetTransactionTypes(db *sql.DB) []domain.TransactionType {
+func (ttr TransactionTypeRepository) GetTransactionTypes(db *sql.DB) []domain.TransactionType {
 	rows, err := db.Query("SELECT * FROM transaction_type")
 	defer rows.Close()
 
@@ -34,7 +36,7 @@ func GetTransactionTypes(db *sql.DB) []domain.TransactionType {
 	return transactionTypes
 }
 
-func SaveTransactionType(db *sql.DB, transactionType domain.TransactionType) domain.TransactionType {
+func (ttr TransactionTypeRepository) SaveTransactionType(db *sql.DB, transactionType domain.TransactionType) domain.TransactionType {
 	var id int
 	err := db.QueryRow("INSERT INTO transaction_type (name, type_group) VALUES ($1, $2) RETURNING id", transactionType.Name, transactionType.TypeGroup).Scan(&id)
 

@@ -9,12 +9,14 @@ import (
 	"net/http"
 )
 
-func GetTransactionTypes(c *gin.Context, db *sql.DB) {
-	transactionTypes := repository.GetTransactionTypes(db)
+type TransactionTypeController struct{}
+
+func (ttc TransactionTypeController) GetTransactionTypes(c *gin.Context, db *sql.DB) {
+	transactionTypes := repository.TransactionTypeRepository{}.GetTransactionTypes(db)
 	c.IndentedJSON(http.StatusOK, mapper.TransactionTypeMapper{}.DomainsToDtos(transactionTypes))
 }
 
-func PostTransactionType(c *gin.Context, db *sql.DB) {
+func (ttc TransactionTypeController) PostTransactionType(c *gin.Context, db *sql.DB) {
 	var request dto.NewTransactionType
 	if err := c.BindJSON(&request); err != nil {
 		return
@@ -26,6 +28,6 @@ func PostTransactionType(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	savedTransactionType := repository.SaveTransactionType(db, newTransactionType)
+	savedTransactionType := repository.TransactionTypeRepository{}.SaveTransactionType(db, newTransactionType)
 	c.IndentedJSON(http.StatusOK, mapper.TransactionTypeMapper{}.DomainToDto(savedTransactionType))
 }

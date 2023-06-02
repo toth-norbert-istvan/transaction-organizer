@@ -8,16 +8,18 @@ import (
 	"strings"
 )
 
-func DomainsToDtos(domains []domain.Transaction, db *sql.DB) []dto.Transaction {
+type TransactionMapper struct{}
+
+func (tm TransactionMapper) DomainsToDtos(domains []domain.Transaction, db *sql.DB) []dto.Transaction {
 	var dtos []dto.Transaction
 	for _, domain := range domains {
-		dtos = append(dtos, DomainToDto(domain, db))
+		dtos = append(dtos, tm.DomainToDto(domain, db))
 	}
 	return dtos
 }
 
-func DomainToDto(domain domain.Transaction, db *sql.DB) dto.Transaction {
-	transactionTypeDomain, err := repository.GetTransactionType(domain.TransactionTypeId, db)
+func (tm TransactionMapper) DomainToDto(domain domain.Transaction, db *sql.DB) dto.Transaction {
+	transactionTypeDomain, err := repository.TransactionTypeRepository{}.GetTransactionType(domain.TransactionTypeId, db)
 
 	var transactionTypeDto *dto.TransactionType
 	if err == nil {
