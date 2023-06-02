@@ -4,7 +4,6 @@ import (
 	"github.com/transaction-organizer/domain"
 	"github.com/transaction-organizer/dto"
 	"github.com/transaction-organizer/repository"
-	"strings"
 )
 
 type TransactionMapper struct{}
@@ -31,7 +30,7 @@ func (tm TransactionMapper) DomainToDto(domain domain.Transaction) dto.Transacti
 
 	return dto.Transaction{
 		Id:              domain.Id,
-		Partner:         strings.TrimSpace(domain.Partner),
+		Partner:         domain.Partner,
 		Amount:          domain.Amount,
 		Date:            domain.Date,
 		TransactionType: transactionTypeDto,

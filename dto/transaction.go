@@ -13,5 +13,5 @@ type Transaction struct {
 }
 
 type TransactionPatch struct {
-	TransactionTypeId string `json:"id"`
+	TransactionTypeId int `json:"id"`
 }

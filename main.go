@@ -30,10 +30,13 @@ func initTransactionMethods(router *gin.Engine) {
 	router.GET("/transactions", func(c *gin.Context) {
 		controller.TransactionController{}.GetTransactions(c)
 	})
+	router.GET("/transactions/unorganized", func(c *gin.Context) {
+		controller.TransactionController{}.GetUnorganizedTransactions(c)
+	})
 	router.POST("/transactions/kh", func(c *gin.Context) {
 		controller.TransactionController{}.PostKhTransaction(c)
 	})
-	router.PATCH("/transactions/:transactionId", func(c *gin.Context) {
+	router.PATCH("/transactions/:transactionId/type/:typeId", func(c *gin.Context) {
 		controller.TransactionController{}.PatchTransaction(c)
 	})
 }
