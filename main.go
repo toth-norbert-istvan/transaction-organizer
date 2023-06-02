@@ -14,6 +14,7 @@ func main() {
 	router := gin.Default()
 	initTransactionMethods(router)
 	initTransactionTypeMethods(router)
+	initReportMethods(router)
 	router.Run("localhost:8080")
 }
 
@@ -38,5 +39,11 @@ func initTransactionMethods(router *gin.Engine) {
 	})
 	router.PATCH("/transactions/:transactionId/type/:typeId", func(c *gin.Context) {
 		controller.TransactionController{}.PatchTransaction(c)
+	})
+}
+
+func initReportMethods(router *gin.Engine) {
+	router.GET("/report/group-summary", func(c *gin.Context) {
+		controller.ReportController{}.GetGroupSummaryReport(c)
 	})
 }

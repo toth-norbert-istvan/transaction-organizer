@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"github.com/transaction-organizer/db"
 	"github.com/transaction-organizer/domain"
+	"github.com/transaction-organizer/dto"
 	"log"
+	"time"
 )
 
 type TransactionRepository struct{}
@@ -53,6 +55,28 @@ func (tr TransactionRepository) UpdateTransactionTypeById(transactionId int, tra
 	result, err := db.Exec("UPDATE transactions SET transaction_type_id =$1 WHERE id = $2", transactionTypeId, transactionId)
 	result.RowsAffected()
 	return err
+}
+
+func (tr TransactionRepository) GetGroupSummaryReport(fromDate time.Time, toDate time.Time) []dto.GroupSummaryReport {
+	var db = db.PostgreSqlDB{}.GetDb()
+
+	rows, err := db.Query(
+		"SELECT tp.type_group, SUM(t.amount) FROM transactions t JOIN transaction_type tp ON t.transaction_type_id = tp.id "+
+			" WHERE date BETWEEN $1 AND $2 "+
+			" GROUP BY tp.type_group", fromDate, toDate)
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var groupSummaryReport dto.GroupSummaryReport
+	var groupSummaryReports []dto.GroupSummaryReport
+	for rows.Next() {
+		rows.Scan(&groupSummaryReport.Group, &groupSummaryReport.Sum)
+		groupSummaryReports = append(groupSummaryReports, groupSummaryReport)
+	}
+	return groupSummaryReports
 }
 
 func mapRowsToTransactions(rows *sql.Rows) []domain.Transaction {
