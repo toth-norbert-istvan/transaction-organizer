@@ -46,4 +46,7 @@ func initReportMethods(router *gin.Engine) {
 	router.GET("/report/group-summary", func(c *gin.Context) {
 		controller.ReportController{}.GetGroupSummaryReport(c)
 	})
+	router.GET("/report/transaction-type-summary", func(c *gin.Context) {
+		controller.ReportController{}.GetSummaryReportByTransactionType(c)
+	})
 }

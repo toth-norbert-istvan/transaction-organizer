@@ -79,6 +79,28 @@ func (tr TransactionRepository) GetGroupSummaryReport(fromDate time.Time, toDate
 	return groupSummaryReports
 }
 
+func (tr TransactionRepository) GetSummaryReportByTransactionType(fromDate time.Time, toDate time.Time) []dto.SummaryByTransactionType {
+	var db = db.PostgreSqlDB{}.GetDb()
+
+	rows, err := db.Query(
+		"SELECT tp.name, SUM(t.amount) FROM transactions t JOIN transaction_type tp ON t.transaction_type_id = tp.id "+
+			" WHERE date BETWEEN $1 AND $2 "+
+			" GROUP BY tp.id", fromDate, toDate)
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var reportByTransactionType dto.SummaryByTransactionType
+	var reportsByTransactionType []dto.SummaryByTransactionType
+	for rows.Next() {
+		rows.Scan(&reportByTransactionType.TransactionType, &reportByTransactionType.Sum)
+		reportsByTransactionType = append(reportsByTransactionType, reportByTransactionType)
+	}
+	return reportsByTransactionType
+}
+
 func mapRowsToTransactions(rows *sql.Rows) []domain.Transaction {
 	var transaction domain.Transaction
 	var transactions []domain.Transaction
